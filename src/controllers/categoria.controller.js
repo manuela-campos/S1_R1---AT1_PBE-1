@@ -1,4 +1,4 @@
-import categoriaModel from "../models/categoria.model";
+import categoriaModel from "../models/categoria.model.js";
 
 const validacoes = {
   // Verifica se o id é um inteiro válido
@@ -11,18 +11,16 @@ const categoriaController = {
   criar: async (req, res) => {
     try {
       console.log(req.body);
-      
+
       const { id_categoria, descricaoCategoria } = req.body;
 
       // tratamento do id_categoria e valor do produto
       if (!validacoes.isNumeroInteiro(id_categoria)) {
-        return res
-          .status(400)
-          .json({
-            message: "ID da categoria deve ser um número inteiro válido",
-          });
+        return res.status(400).json({
+          message: "ID da categoria deve ser um número inteiro válido",
+        });
       }
-      
+
       // Verificar se o nome está vazio e remover qualquer espaço em branco iniciais ou finais
       if (descricaoCategoria.trim().lenght === 0) {
         return res
@@ -37,7 +35,7 @@ const categoriaController = {
       };
 
       // Salva no banco
-      const resultado = await categoriaModel.insert(novaCategoria);
+      const resultado = await categoriaModel.insertCategoria(novaCategoria);
 
       res.status(201).json({ message: "Categoria inserida com sucesso" });
     } catch (error) {
@@ -50,8 +48,10 @@ const categoriaController = {
   },
   editar: async (req, res) => {
     try {
+    console.log(req.body);
       const { id_categoria } = req.params;
-      const { idCategoria, descricaoCategoria} = req.body;
+      const { descricaoCategoria } = req.body;
+      
 
       // Verificar se a descrição está vazia e remover qualquer espaço em branco iniciais ou finais
       if (descricaoCategoria.trim().lenght === 0) {
@@ -59,22 +59,19 @@ const categoriaController = {
           .status(400)
           .json({ message: "O campo descrição da categoria está vazio" });
       }
-      // tratamento do id_categoria e valor do produto
-      if (!validacoes.isNumeroInteiro(idCategoria)) {
-        return res
-          .status(400)
-          .json({
-            message: "ID da categoria deve ser um número inteiro válido",
-          });
-      }
+
       // verificar se o produto já existe
-      const categoriaAtual = await categoriaModel.selectById(descricaoCategoria);
+      const categoriaAtual =
+        await categoriaModel.selectById(descricaoCategoria);
       if (categoriaAtual === 1) {
         return res
           .status(409)
           .json({ message: "Essa categoria já existe, tente novamente!" });
       }
-      const resultado = await categoriaAtual.update(id_categoria, dadosAtualizados);
+      const resultado = await categoriaAtual.update(
+        id_categoria,
+        descricaoCategoria
+      );
 
       if (resultado.affectedRows === 0) {
         return res.status(400).json({ message: "Nenhuma alteração realizada" });
@@ -91,19 +88,19 @@ const categoriaController = {
   },
   listarTodos: async (req, res) => {
     try {
-      const result = await categoriaModel.selectAll();
+      const result = await categoriaModel.selectCategoria();
       res.status(200).json({ data: result });
 
       console.log(result);
 
       // Verifica se a consulta é retornada
-      const resultado = await categoriaModel.selectAll();
+      const resultado = await categoriaModel.selectCategoria();
       if (resultado.length === 0) {
         return res
           .status(200)
           .json({ message: `A consulta não retornou resultados` });
       }
-      res.status(200).json({data: resultado});
+      res.status(200).json({ data: resultado });
     } catch (error) {
       console.error(error);
       res.status(500).json({
@@ -153,7 +150,9 @@ const categoriaController = {
           .status(200)
           .json({ message: `Ocorreu um erro ao excluir a categoria` });
       }
-      return res.status(200).json({ message: `Categoria excluída com sucesso` });
+      return res
+        .status(200)
+        .json({ message: `Categoria excluída com sucesso` });
     } catch (error) {
       console.error(error);
       res.status(500).json({

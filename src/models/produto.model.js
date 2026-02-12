@@ -3,15 +3,15 @@ import pool from "../config/db.js";
 const produtoModel = {
     // Nós temos uma consulta para inserir informações na nossa tabela
     insert: async (pProduto) => {
-        const sql = 'INSERT INTO produtos (idCategoria, nomeProduto, valorProduto, vinculoImagem, dataCad) VALUES (?,?,?,?,NOW());';
-        const values = [pProduto.idCtegoria, pProduto.nomeProduto, pProduto.valorProduto, pProduto.vinculoImagem, pProduto.dataCad ];
+        const sql = 'INSERT INTO produtos (id_categoria, nomeProduto, valorProduto, vinculoImagem, dataCad) VALUES (?,?,?,?,NOW());';
+        const values = [pProduto.id_categoria, pProduto.nomeProduto, pProduto.valorProduto, pProduto.vinculoImagem, pProduto.dataCad ];
         const [rows] = await pool.query(sql, values);
         return rows;
     }, 
 
     //Aqui temos uma consulta para ver os dados que foram inseridos na tabela
     selectAll: async () => {
-        const sql = 'SELECT p.idProduto, p.idCategoria, c.descricaoCategoria, p.nomeProduto, p.valorProduto, p.vinculoImagem, p.dataCad FROM produtos p LEFT JOIN categoria c ON p.idCategoria = c.idCategoria ORDER BY p.idProduto DESC';
+        const sql = 'SELECT p.idProduto, p.id_categoria, c.descricaoCategoria, p.nomeProduto, p.valorProduto, p.vinculoImagem, p.dataCad FROM produtos p LEFT JOIN categoria c ON p.id_categoria = c.id_categoria ORDER BY p.idProduto DESC';
         const [rows] = await pool.query(sql);
         return rows;
     },
@@ -28,7 +28,7 @@ const produtoModel = {
         const sql = `
             UPDATE produtos 
             SET 
-                idCategoria = ?,
+                id_categoria = ?,
                 nomeProduto = ?,
                 valorProduto = ?,
                 vinculoImagem = COALESCE(?, vinculoImagem)
@@ -36,7 +36,7 @@ const produtoModel = {
         `;
         // COALESCE mantém imagem antiga se não enviar nova
         const values = [
-            produto.idCategoria,
+            produto.id_categoria,
             produto.nomeProduto,
             produto.valorProduto,
             produto.vinculoImagem,

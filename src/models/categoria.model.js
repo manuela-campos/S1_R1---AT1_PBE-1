@@ -1,4 +1,4 @@
-import pool from "../config/db";
+import pool from "../config/db.js";
 
 const categoriaModel = {
   insertCategoria: async (cCategoria) => {
@@ -16,7 +16,7 @@ const categoriaModel = {
   selectById: async (id) => {
         const sql = `
             SELECT 
-                c.idCategoria,
+                c.id_categoria,
                 c.descricaoCategoria,
                 c.dataCad
             FROM categoria
@@ -26,7 +26,7 @@ const categoriaModel = {
         return rows;
     },
     // Atuallizar o valor que deseja na tabela
-      update: async (id, descricaoCategoria) => {
+    update: async (id, descricaoCategoria) => {
         const sql = `
             UPDATE categoria 
             SET 

@@ -45,7 +45,7 @@ const produtoController = {
 
       // Vai funcionar da seguinte forma é onde vai preparar o objeto para salvar os valores
       const novoProduto = {
-        idCategoria: parseInt(id_categoria),
+        id_categoria: parseInt(id_categoria),
         nomeProduto: nomeProduto.trim(), // remove os espaços desnecessários declarados no início e/ou no final de uma string.
         valorProduto: parseFloat(valorProduto).toFixed(2),
         vinculoImagem: vinculoImagem,
@@ -66,7 +66,7 @@ const produtoController = {
   editar: async (req, res) => {
     try {
       const { idProduto } = req.params;
-      const { idCategoria, nomeProduto, valorProduto } = req.body;
+      const { id_categoria, nomeProduto, valorProduto } = req.body;
       const vinculoImagem = req.file ? req.file.filename : null;
 
       // Verificar se o nome está vazio e remover qualquer espaço em branco iniciais ou finais
@@ -80,7 +80,7 @@ const produtoController = {
         return res.status(400).json({ message: "ID do produto inválido" });
       }
       // tratamento do id_categoria e valor do produto
-      if (!validacoes.isNumeroInteiro(idCategoria)) {
+      if (!validacoes.isNumeroInteiro(id_categoria)) {
         return res
           .status(400)
           .json({
